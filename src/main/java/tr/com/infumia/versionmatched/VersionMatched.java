@@ -10,7 +10,7 @@ import tr.com.infumia.reflection.cls.ClassOf;
 /**
  * matches classes with your server version and choose the right class for instantiating instead of you.
  *
- * @param version the version of the server, pattern must be like that 1_14_R1 1_13_R2.
+ * @param version the version of the server, pattern must be like that XXX1_14_R1 XXX1_13_R2.
  * @param versionClasses the version classes.
  * @param <T> the interface of classes.
  */
