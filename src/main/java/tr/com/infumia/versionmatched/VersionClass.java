@@ -1,6 +1,7 @@
 package tr.com.infumia.versionmatched;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.jetbrains.annotations.NotNull;
 import tr.com.infumia.bukkitversion.BukkitVersion;
@@ -15,7 +16,7 @@ import tr.com.infumia.bukkitversion.BukkitVersion;
 record VersionClass<T>(
   @NotNull String rawClassName,
   @NotNull Class<? extends T> versionClass
-) {
+) implements Predicate<BukkitVersion> {
 
   /**
    * the numbers.
@@ -31,35 +32,17 @@ record VersionClass<T>(
     this(versionClass.getSimpleName(), versionClass);
   }
 
-  /**
-   * matches the given version.
-   *
-   * @param version the version to match.
-   *
-   * @return {@code true} if the version matched.
-   */
-  boolean match(@NotNull final BukkitVersion version) {
-    return this.version().equals(version);
+  @Override
+  public boolean apply(final BukkitVersion input) {
+    return this.version().version().equals(input.version());
   }
 
   /**
-   * obtains the version.
+   * gets index of the first number.
    *
-   * @return version.
+   * @return index of the first number.
    */
-  @NotNull
-  private BukkitVersion version() {
-    final var sub = this.versionSubString();
-    Preconditions.checkState(sub != -1, "version() -> Invalid name for \"%s\"", this.rawClassName);
-    return new BukkitVersion(this.rawClassName.substring(sub));
-  }
-
-  /**
-   * obtains the version sub string.
-   *
-   * @return version sub string.
-   */
-  private int versionSubString() {
+  private int indexOfFirstNumber() {
     final var subString = new AtomicInteger();
     finalBreak:
     for (final var name : this.rawClassName.toCharArray()) {
@@ -71,5 +54,18 @@ record VersionClass<T>(
       subString.incrementAndGet();
     }
     return subString.get();
+  }
+
+  /**
+   * obtains the version.
+   *
+   * @return version.
+   */
+  @NotNull
+  private BukkitVersion version() {
+    final var sub = this.indexOfFirstNumber();
+    Preconditions.checkState(sub != -1,
+      "version() -> Invalid name for \"%s\"", this.rawClassName);
+    return new BukkitVersion(this.rawClassName.substring(sub));
   }
 }

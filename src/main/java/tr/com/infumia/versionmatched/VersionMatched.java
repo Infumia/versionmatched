@@ -17,7 +17,7 @@ import tr.com.infumia.reflection.cls.ClassOf;
  */
 public record VersionMatched<T>(
   @NotNull BukkitVersion version,
-  @NotNull Collection<VersionClass<? extends T>> versionClasses
+  @NotNull Iterable<VersionClass<? extends T>> versionClasses
 ) {
 
   /**
@@ -27,7 +27,7 @@ public record VersionMatched<T>(
    * @param versionClasses the version classes.
    */
   public VersionMatched(@NotNull final String version,
-                        @NotNull final Collection<VersionClass<? extends T>> versionClasses) {
+                        @NotNull final Iterable<VersionClass<? extends T>> versionClasses) {
     this(new BukkitVersion(version), versionClasses);
   }
 
@@ -70,7 +70,7 @@ public record VersionMatched<T>(
     final var match = this.match();
     return new ClassOf<>(match).getConstructor(types)
       .orElseThrow(() ->
-        new IllegalStateException(String.format("match() -> Couldn't find any constructor on \"%s\" version!",
+        new IllegalStateException("match() -> Couldn't find any constructor on \"%s\" version!".formatted(
           match.getSimpleName())));
   }
 
@@ -86,7 +86,7 @@ public record VersionMatched<T>(
     final var match = this.match();
     return new ClassOf<>(match).getPrimitiveConstructor(types)
       .orElseThrow(() ->
-        new IllegalStateException(String.format("match() -> Couldn't find any constructor on \"%s\" version!",
+        new IllegalStateException("match() -> Couldn't find any constructor on \"%s\" version!".formatted(
           match.getSimpleName())));
   }
 
@@ -98,11 +98,11 @@ public record VersionMatched<T>(
   @NotNull
   private Class<? extends T> match() {
     for (final var versionClass : this.versionClasses) {
-      if (versionClass.match(this.version)) {
+      if (versionClass.test(this.version)) {
         return versionClass.versionClass();
       }
     }
-    throw new IllegalStateException(String.format("match() -> Couldn't find any matched class on \"%s\" version!",
-      this.version.version()));
+    throw new IllegalStateException("match() -> Couldn't find any matched class on \"%s\" version!"
+      .formatted(this.version.version()));
   }
 }
