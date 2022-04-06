@@ -1,10 +1,9 @@
 package tr.com.infumia.versionmatched;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
-import tr.com.infumia.bukkitversion.BukkitVersion;
 
 /**
  * a class that represents version classes.
@@ -16,7 +15,7 @@ import tr.com.infumia.bukkitversion.BukkitVersion;
 record VersionClass<T>(
   @NotNull String rawClassName,
   @NotNull Class<? extends T> versionClass
-) implements Predicate<BukkitVersion> {
+) implements Predicate<String> {
 
   /**
    * the numbers.
@@ -33,8 +32,8 @@ record VersionClass<T>(
   }
 
   @Override
-  public boolean apply(final BukkitVersion input) {
-    return this.version().version().equals(input.version());
+  public boolean test(final String s) {
+    return this.version().equals(s);
   }
 
   /**
@@ -62,10 +61,10 @@ record VersionClass<T>(
    * @return version.
    */
   @NotNull
-  private BukkitVersion version() {
+  private String version() {
     final var sub = this.indexOfFirstNumber();
     Preconditions.checkState(sub != -1,
       "version() -> Invalid name for \"%s\"", this.rawClassName);
-    return new BukkitVersion(this.rawClassName.substring(sub));
+    return this.rawClassName.substring(sub);
   }
 }

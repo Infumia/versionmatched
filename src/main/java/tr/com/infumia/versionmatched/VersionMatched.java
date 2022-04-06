@@ -1,10 +1,9 @@
 package tr.com.infumia.versionmatched;
 
-import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-import tr.com.infumia.bukkitversion.BukkitVersion;
 import tr.com.infumia.reflection.RefConstructed;
 import tr.com.infumia.reflection.cls.ClassOf;
 
@@ -16,20 +15,9 @@ import tr.com.infumia.reflection.cls.ClassOf;
  * @param <T> the interface of classes.
  */
 public record VersionMatched<T>(
-  @NotNull BukkitVersion version,
+  @NotNull String version,
   @NotNull Iterable<VersionClass<? extends T>> versionClasses
 ) {
-
-  /**
-   * ctor.
-   *
-   * @param version the version.
-   * @param versionClasses the version classes.
-   */
-  public VersionMatched(@NotNull final String version,
-                        @NotNull final Iterable<VersionClass<? extends T>> versionClasses) {
-    this(new BukkitVersion(version), versionClasses);
-  }
 
   /**
    * ctor.
@@ -52,7 +40,7 @@ public record VersionMatched<T>(
    */
   @SafeVarargs
   public VersionMatched(@NotNull final Class<? extends T>... versionClasses) {
-    this(new BukkitVersion(),
+    this(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1),
       Stream.of(versionClasses)
         .map(VersionClass::new)
         .collect(Collectors.toSet()));
@@ -103,6 +91,6 @@ public record VersionMatched<T>(
       }
     }
     throw new IllegalStateException("match() -> Couldn't find any matched class on \"%s\" version!"
-      .formatted(this.version.version()));
+      .formatted(this.version));
   }
 }
