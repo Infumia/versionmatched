@@ -58,7 +58,7 @@ public record VersionMatched<T>(
     final var match = this.match();
     return new ClassOf<>(match).getConstructor(types)
       .orElseThrow(() ->
-        new IllegalStateException("match() -> Couldn't find any constructor on \"%s\" version!".formatted(
+        new IllegalStateException("Couldn't find any constructor on \"%s\" version!".formatted(
           match.getSimpleName())));
   }
 
@@ -74,7 +74,7 @@ public record VersionMatched<T>(
     final var match = this.match();
     return new ClassOf<>(match).getPrimitiveConstructor(types)
       .orElseThrow(() ->
-        new IllegalStateException("match() -> Couldn't find any constructor on \"%s\" version!".formatted(
+        new IllegalStateException("Couldn't find any constructor on \"%s\" version!".formatted(
           match.getSimpleName())));
   }
 
@@ -90,7 +90,7 @@ public record VersionMatched<T>(
         return versionClass.versionClass();
       }
     }
-    throw new IllegalStateException("match() -> Couldn't find any matched class on \"%s\" version!"
+    throw new IllegalStateException("Couldn't find any matched class on \"%s\" version!"
       .formatted(this.version));
   }
 }
