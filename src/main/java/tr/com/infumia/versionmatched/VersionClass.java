@@ -37,14 +37,14 @@ record VersionClass<T>(
    * @return index of the first number.
    */
   private int indexOfFirstNumber() {
-    final var s = new AtomicInteger();
+    final var index = new AtomicInteger();
     for (final var c : this.rawClassName.toCharArray()) {
       if (Character.isDigit(c)) {
         break;
       }
-      s.incrementAndGet();
+      index.incrementAndGet();
     }
-    return s.get();
+    return index.get();
   }
 
   /**
