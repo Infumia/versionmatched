@@ -18,11 +18,6 @@ record VersionClass<T>(
 ) implements Predicate<String> {
 
   /**
-   * the numbers.
-   */
-  private static final char[] NUMBERS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-
-  /**
    * ctor.
    *
    * @param versionClass the version class.
@@ -43,12 +38,9 @@ record VersionClass<T>(
    */
   private int indexOfFirstNumber() {
     final var subString = new AtomicInteger();
-    finalBreak:
-    for (final var name : this.rawClassName.toCharArray()) {
-      for (final var number : VersionClass.NUMBERS) {
-        if (name == number) {
-          break finalBreak;
-        }
+    for (final var ch : this.rawClassName.toCharArray()) {
+      if (Character.isDigit(ch)) {
+        break;
       }
       subString.incrementAndGet();
     }
