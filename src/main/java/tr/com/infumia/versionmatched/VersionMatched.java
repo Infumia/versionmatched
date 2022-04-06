@@ -4,29 +4,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import tr.com.infumia.
+import tr.com.infumia.bukkitversion.BukkitVersion;
+import tr.com.infumia.reflection.RefConstructed;
+import tr.com.infumia.reflection.cls.ClassOf;
 
 /**
  * matches classes with your server version and choose the right class for instantiating instead of you.
  *
+ * @param version the version of the server, pattern must be like that 1_14_R1 1_13_R2.
+ * @param versionClasses the version classes.
  * @param <T> the interface of classes.
  */
-@RequiredArgsConstructor
-public final class VersionMatched<T> {
-
-  /**
-   * version of the server, pattern must be like that 1_14_R1 1_13_R2.
-   */
-  @NotNull
-  private final BukkitVersion version;
-
-  /**
-   * classes that match.
-   */
-  @NotNull
-  private final Collection<VersionClass<T>> versionClasses;
+public record VersionMatched<T>(
+  @NotNull BukkitVersion version,
+  @NotNull Collection<VersionClass<T>> versionClasses
+) {
 
   /**
    * ctor.
@@ -108,7 +101,7 @@ public final class VersionMatched<T> {
   private Class<? extends T> match() {
     for (final var versionClass : this.versionClasses) {
       if (versionClass.match(this.version)) {
-        return versionClass.getVersionClass();
+        return versionClass.versionClass();
       }
     }
     throw new IllegalStateException(String.format("match() -> Couldn't find any matched class on \"%s\" version!",

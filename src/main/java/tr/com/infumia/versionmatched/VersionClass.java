@@ -2,35 +2,25 @@ package tr.com.infumia.versionmatched;
 
 import com.google.common.base.Preconditions;
 import java.util.concurrent.atomic.AtomicInteger;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import tr.com.infumia.bukkitversion.BukkitVersion;
 
 /**
  * a class that represents version classes.
  *
+ * @param rawClassName the raw class name.
+ * @param versionClass the version class.
  * @param <T> type of the class.
  */
-@RequiredArgsConstructor
-final class VersionClass<T> {
+record VersionClass<T>(
+  @NotNull String rawClassName,
+  @NotNull Class<? extends T> versionClass
+) {
 
   /**
    * the numbers.
    */
   private static final char[] NUMBERS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-
-  /**
-   * the raw class name.
-   */
-  @NotNull
-  private final String rawClassName;
-
-  /**
-   * the version class.
-   */
-  @NotNull
-  @Getter
-  private final Class<? extends T> versionClass;
 
   /**
    * ctor.
