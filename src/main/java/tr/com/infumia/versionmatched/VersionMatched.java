@@ -1,9 +1,8 @@
 package tr.com.infumia.versionmatched;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import tr.com.infumia.bukkitversion.BukkitVersion;
 import tr.com.infumia.reflection.RefConstructed;
@@ -18,7 +17,7 @@ import tr.com.infumia.reflection.cls.ClassOf;
  */
 public record VersionMatched<T>(
   @NotNull BukkitVersion version,
-  @NotNull Collection<VersionClass<T>> versionClasses
+  @NotNull Collection<VersionClass<? extends T>> versionClasses
 ) {
 
   /**
@@ -27,7 +26,8 @@ public record VersionMatched<T>(
    * @param version the version.
    * @param versionClasses the version classes.
    */
-  public VersionMatched(@NotNull final String version, @NotNull final Collection<VersionClass<T>> versionClasses) {
+  public VersionMatched(@NotNull final String version,
+                        @NotNull final Collection<VersionClass<? extends T>> versionClasses) {
     this(new BukkitVersion(version), versionClasses);
   }
 
@@ -40,9 +40,9 @@ public record VersionMatched<T>(
   @SafeVarargs
   public VersionMatched(@NotNull final String version, @NotNull final Class<? extends T>... versionClasses) {
     this(version,
-      Arrays.stream(versionClasses)
-        .map((Function<Class<? extends T>, VersionClass<T>>) VersionClass::new)
-        .collect(Collectors.toList()));
+      Stream.of(versionClasses)
+        .map(VersionClass::new)
+        .collect(Collectors.toSet()));
   }
 
   /**
@@ -53,9 +53,9 @@ public record VersionMatched<T>(
   @SafeVarargs
   public VersionMatched(@NotNull final Class<? extends T>... versionClasses) {
     this(new BukkitVersion(),
-      Arrays.stream(versionClasses)
-        .map((Function<Class<? extends T>, VersionClass<T>>) VersionClass::new)
-        .collect(Collectors.toList()));
+      Stream.of(versionClasses)
+        .map(VersionClass::new)
+        .collect(Collectors.toSet()));
   }
 
   /**
@@ -66,10 +66,9 @@ public record VersionMatched<T>(
    * @return constructor of class of {@link T}.
    */
   @NotNull
-  public RefConstructed<T> of(@NotNull final Object... types) {
+  public RefConstructed<? extends T> of(@NotNull final Object... types) {
     final var match = this.match();
-    // noinspection unchecked
-    return (RefConstructed<T>) new ClassOf<>(match).getConstructor(types)
+    return new ClassOf<>(match).getConstructor(types)
       .orElseThrow(() ->
         new IllegalStateException(String.format("match() -> Couldn't find any constructor on \"%s\" version!",
           match.getSimpleName())));
@@ -83,10 +82,9 @@ public record VersionMatched<T>(
    * @return constructor of class of {@link T}.
    */
   @NotNull
-  public RefConstructed<T> ofPrimitive(@NotNull final Object... types) {
+  public RefConstructed<? extends T> ofPrimitive(@NotNull final Object... types) {
     final var match = this.match();
-    // noinspection unchecked
-    return (RefConstructed<T>) new ClassOf<>(match).getPrimitiveConstructor(types)
+    return new ClassOf<>(match).getPrimitiveConstructor(types)
       .orElseThrow(() ->
         new IllegalStateException(String.format("match() -> Couldn't find any constructor on \"%s\" version!",
           match.getSimpleName())));
