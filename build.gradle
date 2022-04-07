@@ -5,12 +5,26 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+  id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group 'tr.com.infumia'
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
+
+configurations {
+  testImplementation.extendsFrom implementation
+}
+
+checkstyle {
+  configFile = file('checkstyle.xml')
+  checkstyleTest.enabled = false
+}
+
+test {
+  useJUnitPlatform()
+}
 
 compileJava {
   options.encoding = 'UTF-8'
@@ -50,19 +64,25 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
   from javadoc.destinationDir
 }
 
-checkstyle {
-  configFile = file('checkstyle.xml')
-  checkstyleTest.enabled = false
-}
-
-test {
-  useJUnitPlatform()
+shadowJar {
+  dependsOn(sourcesJar)
+  dependsOn(javadocJar)
+  dependsOn(jar)
+  archiveClassifier.set(null)
+  archiveClassifier.convention(null)
+  archiveBaseName.set(project.name)
+  archiveBaseName.convention(project.name)
+  archiveVersion.set(null)
+  archiveVersion.convention(null)
 }
 
 repositories {
   mavenCentral()
+  maven { url 'https://jitpack.io/' }
   maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+  maven { url 'https://storehouse.okaeri.eu/repository/maven-public/' }
+  maven { url 'https://repo.glaremasters.me/repository/concuncan/' }
   mavenLocal()
 }
 
@@ -77,6 +97,7 @@ dependencies {
   // Annotations
 
   implementation 'tr.com.infumia:reflection:0.1.4-SNAPSHOT'
+
   compileOnlyApi 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
 
   testImplementation "org.junit.jupiter:junit-jupiter:${junitjupiter}"
