@@ -105,12 +105,12 @@ dependencies {
 
 publishing {
   publications {
-    mavenJava(MavenPublication) {
+    mavenJava(MavenPublication) { publication ->
       groupId project.group
       artifactId project.name
       version project.version
 
-      from components.java
+      project.shadow.component(publication)
       artifact tasks.sourcesJar
       artifact tasks.javadocJar
       pom {
