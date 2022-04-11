@@ -96,7 +96,7 @@ dependencies {
   testAnnotationProcessor "org.jetbrains:annotations:${annotations}"
   // Annotations
 
-  implementation 'tr.com.infumia:reflection:0.1.4-SNAPSHOT'
+  implementation 'tr.com.infumia:reflection:0.1.4'
 
   compileOnlyApi 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
 
