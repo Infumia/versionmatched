@@ -1,6 +1,5 @@
 plugins {
   id 'java'
-  id 'java-library'
   id 'checkstyle'
   id 'maven-publish'
   id 'signing'
@@ -88,17 +87,17 @@ repositories {
 
 dependencies {
   // Annotations
-  compileOnlyApi "org.jetbrains:annotations:${annotations}"
+  compileOnly "org.jetbrains:annotations:${annotations}"
   annotationProcessor "org.jetbrains:annotations:${annotations}"
-  compileOnlyApi "org.projectlombok:lombok:${lombok}"
+  compileOnly "org.projectlombok:lombok:${lombok}"
   annotationProcessor "org.projectlombok:lombok:${lombok}"
   testAnnotationProcessor "org.projectlombok:lombok:${lombok}"
   testAnnotationProcessor "org.jetbrains:annotations:${annotations}"
   // Annotations
 
-  implementation 'tr.com.infumia:reflection:0.1.5'
+  implementation 'tr.com.infumia:reflection:0.1.6'
 
-  compileOnlyApi 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+  compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
 
   testImplementation "org.junit.jupiter:junit-jupiter:${junitjupiter}"
 }
